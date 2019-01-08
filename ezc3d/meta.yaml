@@ -1,42 +1,55 @@
+{% set version = "0.3.3" %}
+
 package:
   name: ezc3d
-  version: "0.3.2"
+  version: {{ version }}
 
 source:
-    git_url: https://github.com/pyomeca/ezc3d
-    git_tag: Release_0.3.2
+  git_url: https://github.com/pyomeca/ezc3d
+  git_tag: Release_{{ version }}
 
 build:
-    number: 13
-    run_exports:
-        strong:
-            - python=3.7
-            - numpy
+  skip: True  # [py2k or osx]
+  number: 15
+  rpaths:
+    - lib/
+    - lib/ezc3d/
+
 
 requirements:
-    host:
-        - python=3.7
-        - numpy
-    
-    build:
-        - {{ compiler('cxx') }}
-        - cmake
-        - swig 
-    
-build:
-    rpath:
-        - lib/
-        - lib/ezc3d/
-#test:
-#  imports:
-#    - ezc3d
-    
+  build:
+    - {{ compiler('cxx') }}
+    - cmake
+    - swig
+    - git
+  host:
+    - python
+    - numpy
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+
+
+test:
+  imports:
+    - ezc3d
+
 about:
   home: https://github.com/pyomeca/ezc3d
-  summary: Library to interact with c3d files
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Easy to use C3D reader/writer in C++, Python'
+
+  description: |
+    EZC3D is an easy to use reader, modifier and writer for C3D format files. It
+    is written en C++ with proper binders for Python and MATLAB scripting
+    langages.
+
+  doc_url: https://pyomeca.github.io/Documentation/ezc3d/
+  dev_url: https://github.com/pyomeca/ezc3d
 
 extra:
-    recipe-maintainers:
-        - mrtnz
-        - pariterre
-
+  recipe-maintainers:
+    - mrtnz
+    - pariterre

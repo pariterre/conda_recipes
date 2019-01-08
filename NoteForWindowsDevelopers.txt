@@ -1,0 +1,4 @@
+On Windows, the default compiler (provided by cxx) is VS2015.
+If you want to use another one, you have to use the command prompt provided by the desired VS. 
+Then, if you want to use conda, you should run the script "activate.bat" that can be found in "Scripts" folder of the installed miniconda
+To activate an environment, use the "activate" script that can be found at the same place.

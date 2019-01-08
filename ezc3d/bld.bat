@@ -2,8 +2,8 @@ mkdir build
 cd build
 
 cmake ../^
-    -G"Visual Studio 14 2015 Win64"^
-    -DCMAKE_INSTALL_PREFIX="%PREFIX%"^
+    -G"Visual Studio 15 2017 Win64"^
+    -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%"^
 	-DBUILD_EXAMPLE=OFF^
 	-DBINDER_MATLAB=OFF^
     -DBINDER_PYTHON3=ON^
