@@ -6,11 +6,12 @@ source:
   git_url: https://github.com/pyomeca/dlib
 
 build:
-  number: 2
+  number: 4
 
 requirements:
   host:
     - lapack
+    - libgcc
 
   build:
     # - {{ compiler('cxx') }}
