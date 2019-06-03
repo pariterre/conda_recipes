@@ -1,0 +1,69 @@
+# Put this file with the name ".travis.yml", activate travis, change the option 
+# in script section
+language: cpp
+matrix:
+  include:
+  - os: linux
+    dist: trusty
+    compiler: gcc
+    env:
+      - COMPILER=g++-7
+  - os: osx
+    osx_image: xcode7.2
+    compiler: gcc
+    env:
+      - COMPILER=xcode7.2
+  - os: windows
+      
+before_install:
+    # Combine global build options with OS/compiler-dependent options
+    - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
+    - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
+   
+    # Add stuff for Python3 tests as well
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+        bash miniconda.sh -b -p $HOME/miniconda;
+        export CONDA_BLD_PATH=/home/travis/miniconda/conda-bld;
+      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
+        bash miniconda.sh -b -p $HOME/miniconda;
+        export CONDA_BLD_PATH=/Users/travis/miniconda/conda-bld;
+      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        choco install miniconda3 --params="'/AddToPath:1'";
+        export PATH="/c/tools/miniconda3/scripts:/c/tools/miniconda3/:$PATH";
+        # Export CONDA_BLD_PATH on the next line when it is known
+        # export CONDA_BLD_PATH=
+      fi
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda config --set auto_update_conda no
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then conda update -q conda; fi
+    - source activate
+
+install:
+    # Install test packages for Python3
+    - conda install conda-build anaconda-client
+      
+script:
+    # Change the names of packages
+    - export package_name=dlib
+    - export version=19.10.0
+    - export build_number=5
+    #
+    - git clone https://github.com/pariterre/conda_recipes.git
+    - cd conda_recipes
+    - cd dlib
+    - conda config --set anaconda_upload no
+    - conda build . -c conda-forge 
+    # CONDA_UPLOAD_TOKEN is obtained from anaconda.org and added in the travis-ci repo
+    # environment variable 
+    - anaconda -t $CONDA_UPLOAD_TOKEN upload -u pyomeca $CONDA_BLD_PATH/$TRAVIS_OS_NAME-64/$package_name-$version-$build_number.tar.bz2 --force;
+    
+
+notifications:
+    email:
+        on_success: never
+        on_failure: never
+

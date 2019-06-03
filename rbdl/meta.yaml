@@ -7,14 +7,14 @@ source:
   hg_tag: 70970b7
 
 build:
-  number: 3
+  number: 5
 
 requirements:
   host:
     - eigen
 
   build:
-    - {{ compiler('cxx') }}
+    - {{ compiler('gcc') }}
     - cmake
 
 about:
